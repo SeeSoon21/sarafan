@@ -65,9 +65,12 @@ public class MessageController {
     }
 
     //websocket
-    @MessageMapping
+    //c помощью аннотации MessageMapping настраиваем, что при отправки сообщения
+    ///app
+    @MessageMapping("/changeMessage")
     @SendTo("/topic/activity")
     public Message message(Message message) {
+        System.out.println("(WS)пришедшее сообщение: " + message.toString());
         return messageRepo.save(message);
     }
 }

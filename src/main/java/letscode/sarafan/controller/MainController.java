@@ -29,8 +29,10 @@ public class MainController {
     public String main(Model model, @AuthenticationPrincipal User user) {
         HashMap<Object, Object> data = new HashMap<>();
         //то есть, если на фронте profile != null, пользователь авторизован
-        data.put("profile", user);
-        data.put("messages", messageRepo.findAll());
+        if (user != null) {
+            data.put("profile", user);
+            data.put("messages", messageRepo.findAll());
+        }
 
         //после, происходит сериализация в json(on front-side)
         model.addAttribute("frontendData", data);

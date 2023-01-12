@@ -6,16 +6,7 @@
 </template>
 
 <script>
-function getIndex(list, id) {
-  //i = id - 1(если без пропусков, типа 17, 25)
-  for (let i = 0; i < list.length; i++) {
-    if (list[i].id === id) {
-      return i;
-    }
-  }
-
-  return -1;
-}
+import { sendMessage } from "util/ws";
 
 export default {
   props: ['messages', 'messageAttr'],
@@ -36,35 +27,11 @@ export default {
   //@click == v-on -- аналогия onclick
   methods: {
     save() {
-      const message = {text: this.text};
+      //если id нет -- уйдёт с id=null(т.е. новое)
+      sendMessage({id: this.id, text: this.text})
+      this.text = ''
+      this.id = ''
 
-      //добавление нового объекта или обновление старого
-      if (this.id) {
-        this.$resource('/message{/id}').update({id: this.id}, message).then(result =>
-            result.json().then(data => {
-              //сообщение с таким id в коллекции уже есть
-              //так что нужно его сначала удалить
-              const index = getIndex(this.messages, data.id);
-
-              //splice -- замена элемента по index'у
-              //index -- индекс заменяемого элемента
-              //1 -- число заменяемых элементов
-              //data -- элемент, на который мы хотим заменить
-              this.messages.splice(index, 1, data);
-            })
-        )
-      } else {
-        //сохраняем сообщение(save ожидает на вход айдишник и объект)
-        //{} -- id-ник
-        //вот тут ожидается ответ от сервера(установка айди и тд)
-        this.$resource('/message{/id}').save({}, message).then(result =>
-            result.json().then(data => {
-              //добавляем в массив сообщений message
-              this.messages.push(data);
-              this.text = '';
-            })
-        );
-      }
     }
   }
 }

@@ -20,7 +20,9 @@ module.exports = {
         //принимает ресурсы с этого хоста
         allowedHosts: [
             'localhost:8080'
-        ]
+        ],
+        stats: 'errors-only',
+        clientLogLevel: 'error'
     },
     module: {
         rules: [
@@ -39,6 +41,13 @@ module.exports = {
             {
                 test: /\.vue$/,
                 loader: 'vue-loader'
+            },
+            {
+                test: /\.css/,
+                use: [
+                    'style-loader',
+                    'css-loader'
+                ]
             }
         ]
     },
